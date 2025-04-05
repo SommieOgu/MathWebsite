@@ -6,10 +6,49 @@
 <body>
 <h1>Polynomial Term Visualization</h1>
 
+<p id="term"></p>
 <p id="vis"></p>
 <p id="demo"></p>
+<p id="demo2"></p>
 
 <script>
+// Function that numbers each term — equivalent to static int IDing in Java
+var incr = (function () {
+    var i = 0;
+
+    return function () {
+        return i++;
+    }
+})();
+
+// What the project displays
+class Term {
+	// Empty constructor
+    constructor() {
+      this.allFactors = [];
+      this.termFactors = [];
+    }
+    
+    // Add a Factor
+    push(factor) {
+      this.allFactors.push(factor);
+      this.termFactors.push(factor.at(0));
+      console.log(this.termFactors);
+    }
+   
+    update(index, value){
+      //update term at index to screen
+      document.getElementById("vis").innerHTML = this.termFactors.join(" * ");
+    }
+    
+    // Put onto screen
+    print() {
+      for (let i = 0; i < this.allFactors.length; i++) {
+        this.termFactors[i] = this.allFactors[i][0];
+      }
+    }
+}
+
 // Member fields:
 //   summands = an array containing each element as a string ["x_1", "x_2"]
 //   currPointer = the current x_i being sent to the TermExtractor
@@ -17,21 +56,22 @@ class Factor {
   constructor(summands) {
     this.summands = summands;
     this.currPointer = 0;
+    this.factorNumber = incr();
   }
   
   // Returns this factor written out in MathJax, $$(x_1 + x_2)$$
   toString() {
-    let outputString = summands.join(" + ");
+    let outputString = this.summands.join(" + ");
     outputString = "$$(".concat(outputString, ")$$");
     return outputString;
   }
   
   // Returns the ith summand in this factor
   at(i) {
-  	if (i > summands.length) {
+  	if (i > this.summands.length) {
     	return "index out of bounds"
     }
-  	return summands[i];
+  	return this.summands[i];
   }
   
   // Makes a button
@@ -45,7 +85,8 @@ class Factor {
     // Click once to change x_1 to x_2
     newButton.addEventListener('click', () => {
     	this.currPointer++;
-  		document.getElementById("vis").innerHTML += this.at(this.currPointer % summands.length);
+  		document.getElementById("vis").innerHTML = this.at(this.currPointer % this.summands.length);
+        globalTerm.update(this.factorNumber, this.at(this.currPointer));
 	});
     
     // Doesn't work, but if you were to double click/right click, it should go backwards
@@ -57,14 +98,22 @@ class Factor {
   }
 }
 
-let summands = ["x_1", "x_2", "x_3"];
+// ALWAYS HAVE THIS AS FIRST THING WE DO
+let globalTerm = new Term();
 
-const factor1 = new Factor(summands);
+// Create some factors to play with
+const factor1 = new Factor(["x_1", "x_2", "x_3"]);
+const factor2 = new Factor(["x_4", "x_5", "x_6"])
 
+// Load all factors into our globalTerm
+globalTerm.push(factor1);
+globalTerm.push(factor2);
+globalTerm.print();
 
 // Modify this to get the print
 document.getElementById("demo").innerHTML = factor1.toString();
 factor1.toButton();
+factor2.toButton();
 // Creates new buttons
 
 </script>
