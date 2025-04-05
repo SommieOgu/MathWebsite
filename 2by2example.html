@@ -65,7 +65,7 @@ class Term {
 
       // Recursive Step
       for (let k = 0; k < allFactors[i + 1].length; k++) {
-        outputString = getExpandedForm(i + 1, k) + allFactors[i].at(k);
+        outputString = getExpandedForm(i + 1, k) + allFactors[i].at(j);
       }
 
       return outputString;
@@ -73,7 +73,7 @@ class Term {
    
     // Expands out entire polynomial symbolically
     expandedForm() {
-      let outputString = this.getExpandedForm("", "", -1, 0);
+      let outputString = this.getExpandedForm("", "", 0, 0);
 
       // Wrap in Latex
       outputString = "$\\begin{align*}" + outputString;
