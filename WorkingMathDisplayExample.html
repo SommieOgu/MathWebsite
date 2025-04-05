@@ -10,6 +10,8 @@
 <p id="vis"></p>
 <p id="demo"></p>
 <p id="demo2"></p>
+    <p id="demo3"></p>
+
 
 <script>
 // Function that numbers each term — equivalent to static int IDing in Java
@@ -55,6 +57,32 @@ class Term {
     print() {
      document.getElementById("vis").innerHTML = "$$".concat(this.termFactors.join(" \\cdot "), "$$");
       MathJax.typesetPromise();
+    }
+
+    regexPrint() {
+    	let coefficients = 1;
+        let vars= new Map();
+        
+        //const test = "3a_22^4"
+        const format = /(-?\d*)(\D)(_\d|_\{\d*\})?(\^\d|\^\{\d*\})?/;
+        
+        for (let i = 0; i < this.termFactors.length; i++){
+        	var result = this.termFactors[i].match(format);
+        	document.getElementById("demo3").innerHTML += result.join("| ") + " // ";
+            
+        	
+            	
+           	let tmp = parseInt(result[1]);
+            if (!isNaN(tmp)){
+            	document.getElementById("demo3").innerHTML += "" + tmp + "***";
+                
+            }
+            /*
+        	let temp = result[2].concat(result[3]);
+            if (temp in vars.keys()){
+            
+            }*/
+        }
     }
    
 }
