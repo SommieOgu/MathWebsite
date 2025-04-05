@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<html>
+<body>
+<h1>Polynomial Term Visualization</h1>
+
+<p id="vis"></p>
+<p id="demo"></p>
+
+<script>
+// Member fields:
+//   summands = an array containing each element as a string ["x_1", "x_2"]
+//   currPointer = the current x_i being sent to the TermExtractor
+class Factor {
+  constructor(summands) {
+    this.summands = summands;
+    this.currPointer = 0;
+  }
+  
+  // Returns this factor written out in MathJax, $$(x_1 + x_2)$$
+  toString() {
+    let outputString = summands.join(" + ");
+    outputString = "$$(".concat(outputString, ")$$");
+    return outputString;
+  }
+  
+  // Returns the ith summand in this factor
+  at(i) {
+  	if (i > summands.length) {
+    	return "index out of bounds"
+    }
+  	return summands[i];
+  }
+  
+  // Makes a button
+  // Click once to change x_3 to x_4
+  // Double click to change x_3 to x_2
+  toButton() {
+  	const newButton = document.createElement('button');
+	newButton.textContent = this.toString();
+	document.body.appendChild(newButton);
+    
+    // Click once to change x_1 to x_2
+    newButton.addEventListener('click', () => {
+    	this.currPointer++;
+  		document.getElementById("vis").innerHTML += this.at(this.currPointer % summands.length);
+	});
+    
+    // Doesn't work, but if you were to double click/right click, it should go backwards
+    // newButton.addEventListener("contextmenu", (e) => {
+    // 	e.preventDefault();
+  	// 	document.getElementById("demo").innerHTML += this.at(this.currPointer % summands.length);
+    //     this.currPointer--;
+	// });
+  }
+}
+
+let summands = ["x_1", "x_2", "x_3"];
+
+const factor1 = new Factor(summands);
+
+
+// Modify this to get the print
+document.getElementById("demo").innerHTML = factor1.toString();
+factor1.toButton();
+// Creates new buttons
+
+</script>
+
+</body>
+</html>

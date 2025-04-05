@@ -54,7 +54,7 @@ class Term {
     // Send our current term to the screen at "vis" element
     print() {
      document.getElementById("vis").innerHTML = "$$".concat(this.termFactors.join(" \\cdot "), "$$");
-     MathJax.typeset();
+      MathJax.typesetPromise();
     }
    
 }
@@ -86,7 +86,7 @@ class Factor {
             outputString += " + ";
         }
       if (i == this.currPointer) {
-            outputString += "\\require{color} \\colorbox{pink}{$" + this.summands[i] + "$}";
+      outputString += "{\\require{color} \\color{red}{" + this.summands[i] + "}}";
         } else {
             outputString += this.summands[i];
         }
@@ -120,7 +120,7 @@ class Factor {
             document.getElementById("vis").innerHTML = this.at(this.currPointer % this.summands.length);
         globalTerm.update(this.factorNumber, this.at(this.currPointer));
         newButton.textContent = this.toStringHighlighted();
-            MathJax.typesetPromise();
+        MathJax.typesetPromise();
       });
    
     // Doesn't work, but if you were to double click/right click, it should go backwards
@@ -137,11 +137,11 @@ let globalTerm = new Term();
 
 // Create some factors to play with
 const factorArray = [
-    new Factor(["x_1", "x_2", "x_3"]),
-    new Factor(["x_4", "x_5", "x_6"]),
-    new Factor(["9y^3", "3x_5", "9x_3", "y_5", "z_6"]),
-    new Factor(["9y^3", "3x_5", "9x_3", "y_15", "z_6"]),
-    new Factor(["9y^3", "3x_5", "-9x_3", "y_5", "z_19"])
+    new Factor(["2x_1", "x_2", "x_3"]),
+    new Factor(["x_4", "-x_5", "x_6"]),
+    new Factor(["-9y^3", "3x_5", "9x_3", "y_5", "z_6"]),
+    new Factor(["9y^3", "3x_5", "9x_3", "5y_1", "z_6"]),
+    new Factor(["9y^3", "3x_5", "-9x_3x_4x_5^2", "y_5", "z_19"])
 ];
 
 
