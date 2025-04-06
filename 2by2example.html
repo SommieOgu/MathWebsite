@@ -1,204 +1,191 @@
 <!DOCTYPE html>
+
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <html>
+
 <body>
-<h1>Polynomial Term Visualization</h1>
-<p>Polynomials are useful in many areas of mathematics and beyond. This project visualizes a specific term of
-  a polynomial, given by a specific choice of summands within each factor.</p>
+  <h1>Polynomial Term Visualization</h1>
+  <h2>Tutorial</h2>
+  <p>Polynomials are useful in many areas of mathematics. This project visualizes a specific term of
+    a polynomial, given by a specific choice of summands within each factor.</p>
 
-<p> <b>Expanded form:</b></p>
-<p id="expanded"><b></b></p>
 
-<p> <b>Current term:</b></p>
-<p id="term"></p>
-<p id="vis"></p>
-<p id="demo"></p>
-<p id="demo2"></p>
+  <p> <b>Expanded form:</b></p>
+  <p id="expanded"><b>$$ac + ad + bc + bd$$</b></p>
 
-<p><b>Factored form & choice of contribution:</b></p>
-<p>Click on the buttons to change the current summand within each factor. The current choice is displayed in red.</p>
+  <p> <b>Current term:</b></p>
+  <p id="vis"></p>
+  <p id="demo"></p>
+  <p id="demo2"></p>
 
-<script>
-// Function that numbers each term — equivalent to static int IDing in Java
-var incr = (function () {
-    var i = 0;
+  <p><b>Factored form & choice of contribution:</b></p>
+  <p>Click on the buttons to change the current summand within each factor. The current choice is displayed in red.</p>
 
-    return function () {
+  <script>
+    // Function that numbers each term — equivalent to static int IDing in Java
+    var incr = (function () {
+      var i = 0;
+
+      return function () {
         return i++;
-    }
-})();
+      }
+    })();
 
-// What the project displays
-class Term {
-      // Empty constructor
-    constructor() {
-      this.allFactors = [];
-      this.termFactors = [];
-      this.factorLengths = [];
-    }
-   
-    // Add a Factor to our internal representation
-    push(factor) {
-      this.allFactors.push(factor);
-      this.termFactors.push(factor.at(0));
-      this.factorLengths.push(factor.summands.length);
-      // Update expanded form
-      document.getElementById("expanded").innerHTML = this.expandedForm();
-    }
+    // What the project displays
+    class Term {
+      // Empty constructor
+      constructor() {
+        this.allFactors = [];
+        this.termFactors = [];
+        this.factorLengths = [];
 
-    // Recursively goes down tree of possibilities
-    // @param inputString the string we're multiplying to
-    // @param i = the level of the tree we're at,
-    //    i.e. we're at the ith factor (a + b)(c + d + e)
-    //    if i = 2, we're considering (c + d + e)
-    // @param j = the specific summand we're considering within
-    //    this factor. So if i = 2, j = 2, we're multiplying inputString
-    //    with e
-    getExpandedForm(inputString, outputString, i, j) {
-      // Base Case, bottom of recursion tree
-      if (i == this.allFactors.length - 1) {
-        // Prepend the jth summand at i to this input string
-        return inputString + allFactors[i].at(j);
+        // Takes care of possible expansion
+        this.makeExpandButton();
+        this.wasExpanded = false;
       }
 
-      // Recursive Step
-      for (let k = 0; k < allFactors[i + 1].length; k++) {
-        outputString = getExpandedForm(i + 1, k) + allFactors[i].at(j);
+      // Add a Factor to our internal representation
+      push(factor) {
+        this.allFactors.push(factor);
+        this.termFactors.push(factor.at(0));
+        this.factorLengths.push(factor.summands.length);
       }
 
-      return outputString;
-    }
-   
-    // Expands out entire polynomial symbolically
-    expandedForm() {
-      let outputString = this.getExpandedForm("", "", 0, 0);
-
-      // Wrap in Latex
-      outputString = "$\\begin{align*}" + outputString;
-      // Add the closing $$ to the string
-      outputString += "\\end{align*}$";
-      return outputString;
-    }
-
-      // Factors send signal to update this, then it prints to screen
-    update(index, value){
-      //update term at index to screen
-      this.termFactors[index] = value;
-      this.print();
-    }
-   
-    // Start up term with leftmost summands
-    initialize(){
-      for (let i = 0; i < this.allFactors.length; i++) {
-          this.termFactors[i] = this.allFactors[i].at(0);
-      }
+      // Factors send signal to update this, then it prints to screen
+      update(index, value) {
+        //update term at index to screen
+        this.termFactors[index] = value;
         this.print();
-    }
-   
-    // Send our current term to the screen at "vis" element
-    print() {
-      document.getElementById("vis").innerHTML = "$$".concat(this.termFactors.join(" \\cdot "), "$$");
-    }
-   
-}
+      }
 
-// Member fields:
-//   summands = an array containing each element as a string ["x_1", "x_2"]
-//   currPointer = the current x_i being sent to the TermExtractor
-class Factor {
-  constructor(summands) {
-    this.summands = summands;
-    this.currPointer = 0;
-    this.factorNumber = incr();
-    this.toButton();
-  }
- 
-  // Returns this factor written out in MathJax, $$(x_1 + x_2)$$
-  toString() {
-    let outputString = this.summands.join(" + ");
-    outputString = "$$(".concat(outputString, ")$$");
-    return outputString;
-  }
- 
-  // Highlights the current in-use summand
-  toStringHighlighted() {
-    let outputString = "";
-    // Format correctly, but also highlighted
-    for (let i = 0; i < this.summands.length; i++) {
-      if (i != 0 && this.summands[i][0] != '-') {
-            outputString += " + ";
+      // Start up term with leftmost summands
+      initialize() {
+        for (let i = 0; i < this.allFactors.length; i++) {
+          this.termFactors[i] = this.allFactors[i].at(0);
         }
-      if (i == this.currPointer) {
-      outputString += "{\\require{color} \\color{red}{" + this.summands[i] + "}}";
-        } else {
-            outputString += this.summands[i];
+        this.print();
+      }
+
+      // Send our current term to the screen at "vis" element
+      print() {
+        document.getElementById("vis").innerHTML = "$$".concat(this.termFactors.join(" \\cdot "), "$$");
+      }
+
+
+      expandPoly() { 
+        return this.allFactors[0].toString();
+      }
+
+      // Get expanded form
+      makeExpandButton() {
+        let btn = document.createElement("button");
+        btn.innerHTML = "Expand the Polynomial";
+        btn.addEventListener("click", function () {
+          this.wasExpanded = true;
+          // Expand the polynomial
+          document.getElementById("expanded").innerHTML = expandPoly();
+        });
+        document.getElementById("expanded").append(btn);
+      }
+    }
+
+    // Member fields:
+    //   summands = an array containing each element as a string ["x_1", "x_2"]
+    //   currPointer = the current x_i being sent to the TermExtractor
+    class Factor {
+      constructor(summands) {
+        this.summands = summands;
+        this.currPointer = 0;
+        this.factorNumber = incr();
+        this.toButton();
+      }
+
+      // Returns this factor written out in MathJax, $$(x_1 + x_2)$$
+      toString() {
+        let outputString = this.summands.join(" + ");
+        outputString = "$$(".concat(outputString, ")$$");
+        return outputString;
+      }
+
+      // Highlights the current in-use summand
+      toStringHighlighted() {
+        let outputString = "";
+        // Format correctly, but also highlighted
+        for (let i = 0; i < this.summands.length; i++) {
+          if (i != 0 && this.summands[i][0] != '-') {
+            outputString += " + ";
+          }
+          if (i == this.currPointer) {
+            outputString += "{\\require{color} \\color{red}{" + this.summands[i] + "}}";
+          } else {
+            outputString += this.summands[i];
+          }
         }
-    }
-    outputString = "$$(".concat(outputString, ")$$");
-    return outputString;
-  }
- 
-  // Returns the ith summand in this factor
-  at(i) {
-      if (i > this.summands.length) {
-      return "index out of bounds"
-    }
-      return this.summands[i];
-  }
- 
-  // Makes a button
-  // Click once to change x_3 to x_4
-  // Double click to change x_3 to x_2
-  toButton() {
-      const newButton = document.createElement('button');
-      newButton.textContent = this.toStringHighlighted();
-    newButton.style.height = '50px';
-    // TODO: Get all buttons in line with one another display: inline-block;
-      document.body.appendChild(newButton);
-   
-    // Click once to change x_1 to x_2
-    newButton.addEventListener('click', () => {
-      this.currPointer++;
-        this.currPointer %= this.summands.length;
-            document.getElementById("vis").innerHTML = this.at(this.currPointer % this.summands.length);
-        globalTerm.update(this.factorNumber, this.at(this.currPointer));
+        outputString = "$$(".concat(outputString, ")$$");
+        return outputString;
+      }
+
+      // Returns the ith summand in this factor
+      at(i) {
+        if (i > this.summands.length) {
+          return "index out of bounds"
+        }
+        return this.summands[i];
+      }
+
+      // Makes a button
+      // Click once to change x_3 to x_4
+      // Double click to change x_3 to x_2
+      toButton() {
+        const newButton = document.createElement('button');
         newButton.textContent = this.toStringHighlighted();
-        MathJax.typesetPromise();
-      });
-   
-    // Doesn't work, but if you were to double click/right click, it should go backwards
-    // newButton.addEventListener("contextmenu", (e) => {
-    //      e.preventDefault();
-      //    document.getElementById("demo").innerHTML += this.at(this.currPointer % summands.length);
-    //     this.currPointer--;
-      // });
-  }
-}
+        newButton.style.height = '50px';
+        // TODO: Get all buttons in line with one another display: inline-block;
+        document.body.appendChild(newButton);
 
-// ALWAYS HAVE THIS AS FIRST THING WE DO
-let globalTerm = new Term();
+        // Click once to change x_1 to x_2
+        newButton.addEventListener('click', () => {
+          this.currPointer++;
+          this.currPointer %= this.summands.length;
+          document.getElementById("vis").innerHTML = this.at(this.currPointer % this.summands.length);
+          globalTerm.update(this.factorNumber, this.at(this.currPointer));
+          newButton.textContent = this.toStringHighlighted();
+          MathJax.typesetPromise();
+        });
 
-// Create some factors to play with
-const factorArray = [
-    new Factor(["a", "b"]),
-    new Factor(["c", "d"]),
-];
+        // Doesn't work, but if you were to double click/right click, it should go backwards
+        // newButton.addEventListener("contextmenu", (e) => {
+        //      e.preventDefault();
+        //    document.getElementById("demo").innerHTML += this.at(this.currPointer % summands.length);
+        //     this.currPointer--;
+        // });
+      }
+    }
 
+    // ALWAYS HAVE THIS AS FIRST THING WE DO
+    let globalTerm = new Term();
 
-// Load all factors into our globalTerm
-for (let i = 0; i < factorArray.length; i++) {
-    globalTerm.push(factorArray[i]);
-}
-// Initialize the term with the leftmost summands
-globalTerm.initialize();
+    // Create some factors to play with
+    const factorArray = [
+      new Factor(["a", "b"]),
+      new Factor(["c", "d"]),
+    ];
 
-// Modify this to get the print
-document.getElementById("demo").innerHTML = factor1.toString();
-// Creates new buttons
+    // Load all factors into our globalTerm
+    for (let i = 0; i < factorArray.length; i++) {
+      globalTerm.push(factorArray[i]);
+    }
+    // Initialize the term with the leftmost summands
+    globalTerm.initialize();
 
-</script>
+    // Modify this to get the print
+    document.getElementById("demo").innerHTML = factor1.toString();
+    // Creates new buttons
+
+  </script>
 
 </body>
+
 </html>
