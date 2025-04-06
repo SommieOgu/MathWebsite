@@ -133,14 +133,27 @@ class Term {
 
         }
     
+        
+    	let str = "";
         //output the final expression
-        document.getElementById("demo3").innerHTML = "$$" + coefficients;
-        for (let [k,v] of vars){
-            document.getElementById("demo3").innerHTML += "" + k + "^{" + v +"}" ;
-
+        if (coefficients == 1){ //account for 1,-1
+        	str = "$$";
+            
+        } else if (coefficients == -1){
+        	str = "$$" + "-";
+        
+        }else { 
+        	str = "$$"+ coefficients;
         }
-        document.getElementById("demo3").innerHTML += "$$";
-    
+        
+        for (let [k,v] of vars){
+        	if ( !showExponentsOfOne && v == 1 ){
+            	str += "" + k ;
+            } else{
+            	str += "" + k + "^{" + v +"}" ;
+			}
+        }
+        document.getElementById("demo3").innerHTML = str + "$$";
     }
     
    
@@ -221,6 +234,8 @@ class Factor {
 
 // ALWAYS HAVE THIS AS FIRST THING WE DO
 let globalTerm = new Term();
+let showExponentsOfOne = true;
+
 
 // Create some factors to play with
 const factorArray = [
