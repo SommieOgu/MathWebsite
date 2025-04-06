@@ -76,7 +76,7 @@ class Term {
         //const test = "3a_{22}^{34}"
         
         //regex format: decimal, var, _num, ^num
-        const format = /(-?[\d\.]*)(\D)(_\d|_\{[\d\.]*\})?(\^\d|\^\{[\d\.]*\})?/;
+        const format = /(-?[\d\.]*)(\D)?(_\d|_\{[\d\.]*\})?(\^\d|\^\{[\d\.]*\})?/;
         
         //for each ax_b^c in termFactors, 
         for (let i = 0; i < this.termFactors.length; i++){
@@ -147,7 +147,9 @@ class Term {
         }
         
         for (let [k,v] of vars){
-        	if ( !showExponentsOfOne && v == 1 ){
+		if ( k === undefined ){
+			;//do nothing
+		}else if ( !showExponentsOfOne && v == 1 ){
             	str += "" + k ;
             } else{
             	str += "" + k + "^{" + v +"}" ;
