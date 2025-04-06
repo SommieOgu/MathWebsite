@@ -1,2 +1,2 @@
 # MathWebsite
-website To visual polynomial 
+Website to visualize polynomials
