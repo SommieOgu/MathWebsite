@@ -192,80 +192,99 @@
                 let vars = new Map();
                 
                 // const test = "3a_22^4"
-                const format = /(-?[\d\.]*)(\D)(_\d|_\{[\d\.]*\})?(\^\d|\^\{[\d\.]*\})?/;
+                const format = /(-?[\d\.]*)(\D)?(_-?\d|_\{-?[\d\.]*\})?(\^-?\d|\^\{-?[\d\.]*\})?/;
                 
                 for (let i = 0; i < this.termFactors.length; i++){
                     var result = this.termFactors[i].match(format);
                     //document.getElementById("demo3").innerHTML += result.join("| ") + " // ";
                     
+                    let factorsSoFar = "";
+        		 //document.getElementById("testprint").innerHTML = "test";
+ 			        let count = 0;
+                    while(factorsSoFar.length < this.termFactors[i].length && count <= 10){
+                    //document.getElementById("testprint").innerHTML += "" + result[0];
+
                     let coeff = parseFloat(result[1]);
                     if (!isNaN(coeff)){
                         coefficients *= coeff; 
                         //document.getElementById("demo3").innerHTML += "" + tmp + "***";
                     }
                     if (result[1] === "-"){
-            	coefficients *= -1;
-            }
+            	    coefficients *= -1;
+                    }
             
-            //parse variable term (x_b)
-            let variable = result[2]
-            if (!(result[3] === undefined)){
-            	variable += result[3];
-         	}
+                    //parse variable term (x_b)
+                    let variable = result[2]
+                    if (!(result[3] === undefined)){
+                	variable += result[3];
+         	        }
             	
-            // parse exponent (^c)
-            //document.getElementById("demo3").innerHTML += "" + variable + "***";
-            let exp = 1;
-            const int_format = /\^\{?([\d\.]*)\}?/;
+                    // parse exponent (^c)
+                    //document.getElementById("demo3").innerHTML += "" + variable + "***";
+                    let exp = 1;
+                    const int_format = /\^\{?(-?[\d\.]*)\}?/;
             
-            //check if has exponent term
-            if (!(result[4] === undefined)){
-            	//document.getElementById("demo3").innerHTML += "" + result[4] + "+++"
-            	 let int_exp_res = result[4].match(int_format);
-                 //document.getElementById("demo3").innerHTML += "" + int_exp_res[1] + "===";
-                 let temp = int_exp_res[1];
-                 exp = parseFloat(temp);
-            }
+                    //check if has exponent term
+                    if (!(result[4] === undefined)){
+                    	//document.getElementById("demo3").innerHTML += "" + result[4] + "+++"
+                    	 let int_exp_res = result[4].match(int_format);
+                         //document.getElementById("demo3").innerHTML += "" + int_exp_res[1] + "===";
+                         let temp = int_exp_res[1];
+                      exp = parseFloat(temp);
+                    }
             
-            //if variable in map, update, otherwise add
-            if (vars.has(variable)){
-            	let num = vars.get(variable);
-            	num += exp;
-                vars.set(variable,num);
+                    //if variable in map, update, otherwise add
+                    if (vars.has(variable)){
+                    	let num = vars.get(variable);
+                    	num += exp;
+                        vars.set(variable,num);
                 
-            }
-            else{
-            	vars.set(variable,exp);
-            }
-            //document.getElementById("demo3").innerHTML += "" + variable + "," +vars.get(variable) + "***";
+                    }
+                    else{
+                    	vars.set(variable,exp);
+                    }
+                    //document.getElementById("demo3").innerHTML += "" + variable + "," +vars.get(variable) + "***";
+
+                     //inc while
+                    factorsSoFar += result[0];
+             
+                    if (factorsSoFar.length < this.termFactors[i].length){
+                        let substrFactor = this.termFactors[i].substring(factorsSoFar.length);
+                        result = substrFactor.match(format);
+                    }
+                    count ++;
+                    } 
+                }
 
 
-        }
     
         
-    	let str = "";
-        //output the final expression
-        if (coefficients == 1){ //account for 1,-1
-        	str = "$$";
-            
-        } else if (coefficients == -1){
-        	str = "$$" + "-";
-        
-        }else { 
-        	str = "$$"+ coefficients;
-        }
-        
-        for (let [k,v] of vars){
-        	if ( !showExponentsOfOne && v == 1 ){
-            	str += "" + k ;
-            } else{
-            	str += "" + k + "^{" + v +"}" ;
-			}
-        }
-        document.getElementById("demo3").innerHTML = str + "$$";
+    	        let str = "";
+                //output the final expression
+                if (coefficients == 1){ //account for 1,-1
+                	str = "$$";
 
-    }
+                } else if (coefficients == -1){
+                	str = "$$" + "-";
+
+                }else { 
+                	str = "$$"+ coefficients;
+                }
+
+                for (let [k, v] of vars) {
+                 if (k === undefined) {
+                    ;//do nothing
+                 } else if (!showExponentsOfOne && v == 1) {
+                    str += "" + k;
+                    } else {
+                    str += "" + k + "^{" + v + "}";
+                    }
+                }
+                
+                document.getElementById("demo3").innerHTML = str + "$$";
+
             }
+        }        
 
 
         // Member fields:
