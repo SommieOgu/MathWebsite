@@ -43,6 +43,7 @@ class Term {
       //update term at index to screen
       this.termFactors[index] = value;
       this.print();
+      this.regexPrint();
     }
    
     // Start up term with leftmost summands
@@ -51,6 +52,7 @@ class Term {
           this.termFactors[i] = this.allFactors[i].at(0);
       }
         this.print();
+        this.regexPrint();
     }
    
     // Send our current term to the screen at "vis" element
@@ -59,31 +61,79 @@ class Term {
       MathJax.typesetPromise();
     }
 
+    
     regexPrint() {
+    	//coeffs default to 1, initialize empty map
     	let coefficients = 1;
         let vars= new Map();
         
-        //const test = "3a_22^4"
+        //const test = "3a_{22}^{34}"
+        
+        //regex format: decimal, var, _num, ^num
         const format = /(-?\d*)(\D)(_\d|_\{\d*\})?(\^\d|\^\{\d*\})?/;
         
+        //for each ax_b^c in termFactors, 
         for (let i = 0; i < this.termFactors.length; i++){
+        	//match the regex
         	var result = this.termFactors[i].match(format);
-        	document.getElementById("demo3").innerHTML += result.join("| ") + " // ";
+            //var result = test.match(format);
+
+        	//document.getElementById("demo3").innerHTML += result.join("| ") + " // ";
             
         	
+            //parse and mult coefficient (a)
+           	let coeff = parseInt(result[1]);
+            if (!isNaN(coeff)){
+             	coefficients *= coeff;   
+                            	//document.getElementById("demo3").innerHTML += "" + coefficients + "***";
+
+            }
+            
+            //parse variable term (x_b)
+            let variable = result[2]
+            if (!(result[3] === undefined)){
+            	variable += result[3];
+         	}
             	
-           	let tmp = parseInt(result[1]);
-            if (!isNaN(tmp)){
-            	document.getElementById("demo3").innerHTML += "" + tmp + "***";
+            // parse exponent (^c)
+            //document.getElementById("demo3").innerHTML += "" + variable + "***";
+            let exp = 1;
+            const int_format = /\^\{?(\d*)\}?/;
+            
+            //check if has exponent term
+            if (!(result[4] === undefined)){
+            	//document.getElementById("demo3").innerHTML += "" + result[4] + "+++"
+            	 let int_exp_res = result[4].match(int_format);
+                 //document.getElementById("demo3").innerHTML += "" + int_exp_res[1] + "===";
+                 let temp = int_exp_res[1];
+                 exp = parseInt(temp);
+            }
+            
+            //if variable in map, update, otherwise add
+            if (vars.has(variable)){
+            	let num = vars.get(variable);
+            	num += exp;
+                vars.set(variable,num);
                 
             }
-            /*
-        	let temp = result[2].concat(result[3]);
-            if (temp in vars.keys()){
-            
-            }*/
+            else{
+            	vars.set(variable,exp);
+            }
+            //document.getElementById("demo3").innerHTML += "" + variable + "," +vars.get(variable) + "***";
+
+
         }
+    
+        //output the final expression
+        document.getElementById("demo3").innerHTML = "$$" + coefficients;
+        for (let [k,v] of vars){
+            document.getElementById("demo3").innerHTML += "" + k + "^{" + v +"}" ;
+
+        }
+        document.getElementById("demo3").innerHTML += "$$";
+    
     }
+    
    
 }
 
