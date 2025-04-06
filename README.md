@@ -12,3 +12,6 @@ https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server
 The MathJax coloring keeps breaking. If that happens, reloading tends to fix the problem.
 
 **To test out the entire website**, please note you will need XAMPP. **Download the entire folder and run it.**
+
+# Usage, Known Limitations
+* Each summand can have AT MOST 10 variables: aBcdef^2ghh_0i is okay, but abcdefghijk (11 variables) is NOT.
