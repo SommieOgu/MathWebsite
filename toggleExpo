@@ -1,0 +1,18 @@
+ function toggleExponents(){
+            if(showExponentsOfOne){
+            howExponentsOfOne = false;
+            console.log("Exponents of One are now hidden.");
+        }else{
+            showExponentsOfOne.onclick(true);
+            console.log("Exponents of One are now shown.");
+        }
+
+        }
+        var button = document.createElement("button");
+        button.innerHTML = "Toggle Exponents of One"; 
+        button.style.height = '50px';
+        button.style.width = '200px';
+        button.style.marginTop = '20px'; 
+        document.getElementById('button-container').appendChild(button);
+
+        button.addEventListener('click',toggleExponents())
