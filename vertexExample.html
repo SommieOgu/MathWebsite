@@ -7,21 +7,27 @@
 
 <body>
   <h1>Polynomial Term Visualization</h1>
-  <h2>Tutorial</h2>
-  <p>Polynomials are useful in many areas of mathematics. This project visualizes a specific term of
-    a polynomial, given by a specific choice of summands within each factor.</p>
 
-
-  <p> <b>Expanded form:</b></p>
-  <p id="expanded"><b>$$ac + ad + bc + bd$$</b></p>
-
-  <p> <b>Current term:</b></p>
+  <p>
+  <div style="text-align: center;">
+    <b>Current term:</b>
+  </div>
+  </p>
   <p id="vis"></p>
-  <p id="demo"></p>
-  <p id="demo2"></p>
+  <div style="text-align: center;">
+    <p>or</p>
+  </div>
+  <p id="demo3"></p>
 
-  <p><b>Factored form & choice of contribution:</b></p>
-  <p>Click on the buttons to change the current summand within each factor. The current choice is displayed in red.</p>
+  <p>
+  <div style="text-align: center"><b>Factored form & choice of contribution:</b></div>
+  <div style="text-align: center">Click on the buttons to change the current summand within each factor. The current
+    choice is displayed in red.
+  </div>
+  </p>
+
+
+
 
   <script>
     // Function that numbers each term — equivalent to static int IDing in Java
@@ -39,19 +45,13 @@
       constructor() {
         this.allFactors = [];
         this.termFactors = [];
-        this.factorLengths = [];
-
-        // // Takes care of possible expansion
-        // this.expansion = "BlahBlahBlahs";
-        // this.makeExpandButton();
-        // this.wasExpanded = false;
       }
 
       // Add a Factor to our internal representation
       push(factor) {
         this.allFactors.push(factor);
         this.termFactors.push(factor.at(0));
-        this.factorLengths.push(factor.summands.length);
+        console.log(this.termFactors);
       }
 
       // Factors send signal to update this, then it prints to screen
@@ -59,6 +59,7 @@
         //update term at index to screen
         this.termFactors[index] = value;
         this.print();
+        this.regexPrint();
       }
 
       // Start up term with leftmost summands
@@ -67,31 +68,107 @@
           this.termFactors[i] = this.allFactors[i].at(0);
         }
         this.print();
+        this.regexPrint();
       }
 
       // Send our current term to the screen at "vis" element
       print() {
         document.getElementById("vis").innerHTML = "$$".concat(this.termFactors.join(" \\cdot "), "$$");
+        MathJax.typesetPromise();
       }
 
 
-      // expandPoly() { 
-      //   this.expansion = "3";
-      // }
+      regexPrint() {
+        //coeffs default to 1, initialize empty map
+        let coefficients = 1;
+        let vars = new Map();
 
-      // // // Get expanded form
-      // // makeExpandButton() {
-      //   let btn = document.createElement("button");
-      //   btn.innerHTML = "Expand the Polynomial";
-      //   btn.addEventListener("click", function () {
-      //     this.wasExpanded = true;
+        //const test = "3a_{22}^{34}"
+
+        //regex format: decimal, var, _num, ^num
+        const format = /(-?[\d\.]*)(\D)?(_\d|_\{[\d\.]*\})?(\^\d|\^\{[\d\.]*\})?/;
+
+        //for each ax_b^c in termFactors, 
+        for (let i = 0; i < this.termFactors.length; i++) {
+          //match the regex
+          var result = this.termFactors[i].match(format);
+          //var result = test.match(format);
+
+          //document.getElementById("demo3").innerHTML += result.join("| ") + " // ";
 
 
-      //     // Write to screen
-      //     document.getElementById("expanded").innerHTML = this.termFactors[i];
-      //   });
-      //   document.getElementById("expanded").append(btn);
-      // }
+          //parse and mult coefficient (a)
+          let coeff = parseFloat(result[1]);
+          if (!isNaN(coeff)) {
+            coefficients *= coeff;
+            //document.getElementById("demo3").innerHTML += "" + coefficients + "***";
+
+          }
+          if (result[1] === "-") {
+            coefficients *= -1;
+          }
+
+          //parse variable term (x_b)
+          let variable = result[2]
+          if (!(result[3] === undefined)) {
+            variable += result[3];
+          }
+
+          // parse exponent (^c)
+          //document.getElementById("demo3").innerHTML += "" + variable + "***";
+          let exp = 1;
+          const int_format = /\^\{?([\d\.]*)\}?/;
+
+          //check if has exponent term
+          if (!(result[4] === undefined)) {
+            //document.getElementById("demo3").innerHTML += "" + result[4] + "+++"
+            let int_exp_res = result[4].match(int_format);
+            //document.getElementById("demo3").innerHTML += "" + int_exp_res[1] + "===";
+            let temp = int_exp_res[1];
+            exp = parseFloat(temp);
+          }
+
+          //if variable in map, update, otherwise add
+          if (vars.has(variable)) {
+            let num = vars.get(variable);
+            num += exp;
+            vars.set(variable, num);
+
+          }
+          else {
+            vars.set(variable, exp);
+          }
+          //document.getElementById("demo3").innerHTML += "" + variable + "," +vars.get(variable) + "***";
+
+
+        }
+
+
+        let str = "";
+        //output the final expression
+        if (coefficients == 1) { //account for 1,-1
+          str = "$$";
+
+        } else if (coefficients == -1) {
+          str = "$$" + "-";
+
+        } else {
+          str = "$$" + coefficients;
+        }
+
+        for (let [k, v] of vars) {
+          if (k === undefined) {
+            ;//do nothing
+          } else if (!showExponentsOfOne && v == 1) {
+            str += "" + k;
+          } else {
+            str += "" + k + "^{" + v + "}";
+          }
+        }
+        document.getElementById("demo3").innerHTML = str + "$$";
+      }
+
+
     }
 
     // Member fields:
@@ -121,7 +198,7 @@
             outputString += " + ";
           }
           if (i == this.currPointer) {
-            outputString += "{\\require{color} \\color{red}{" + this.summands[i] + "}}";
+            outputString += "{\\require{color} \\textcolor{red}{" + this.summands[i] + "}}";
           } else {
             outputString += this.summands[i];
           }
@@ -169,12 +246,17 @@
 
     // ALWAYS HAVE THIS AS FIRST THING WE DO
     let globalTerm = new Term();
+    let showExponentsOfOne = true;
 
-    // Create some factors to play with
+
+
     const factorArray = [
-      new Factor(["a", "b"]),
-      new Factor(["c", "d"]),
+      new Factor(["v_3", "-v_2"]),
+      new Factor(["v_3", "-v_0"]),
+      new Factor(["v_3", "-v_1"]),
+      new Factor(["v_1", "-v_0"])
     ];
+
 
     // Load all factors into our globalTerm
     for (let i = 0; i < factorArray.length; i++) {
