@@ -9,4 +9,6 @@ To test out a stable, hard-coded demo, please download **WorkingMathDisplayExamp
 If you have VSCode, we recommend using that. You may wish to try opening it using this extension, which we used while coding these no-input demos:
 https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server
 
+The MathJax coloring keeps breaking. If that happens, reloading tends to fix the problem.
+
 **To test out the entire website**, please note you will need XAMPP. **Download the entire folder and run it.**
