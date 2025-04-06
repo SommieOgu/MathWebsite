@@ -6,11 +6,17 @@
 <body>
 <h1>Polynomial Term Visualization</h1>
 
-<p id="term"></p>
-<p id="vis"></p>
-<p id="demo"></p>
-<p id="demo2"></p>
-    <p id="demo3"></p>
+<p> <b>Current term (written out and simplififed):</b></p>
+  <p id="vis"></p>
+  <div style="text-align: center;">
+    <p>or</p>
+</div>
+  <p id="demo3"></p>
+
+  <p><b>Factored form & choice of contribution:</b></p>
+  <p>Click on the buttons to change the current summand within each factor. The current choice is displayed in red.</p>
+
+
 
 
 <script>
@@ -164,7 +170,7 @@ class Factor {
             outputString += " + ";
         }
       if (i == this.currPointer) {
-      outputString += "{\\require{textcolor} \\color{red}{" + this.summands[i] + "}}";
+      outputString += "{\\require{color} \\textcolor{red}{" + this.summands[i] + "}}";
         } else {
             outputString += this.summands[i];
         }

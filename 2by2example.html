@@ -13,7 +13,7 @@
 
 
   <p> <b>Expanded form:</b></p>
-  <p id="expanded"><b>$$ac + ad + bc + bd$$</b></p>
+  <p id="expanded"><b>$$ac + ad + bc + ad$$</b></p>
 
   <p> <b>Current term:</b></p>
   <p id="vis"></p>
@@ -41,9 +41,10 @@
         this.termFactors = [];
         this.factorLengths = [];
 
-        // Takes care of possible expansion
-        this.makeExpandButton();
-        this.wasExpanded = false;
+        // // Takes care of possible expansion
+        // this.expansion = "BlahBlahBlahs";
+        // this.makeExpandButton();
+        // this.wasExpanded = false;
       }
 
       // Add a Factor to our internal representation
@@ -74,21 +75,23 @@
       }
 
 
-      expandPoly() { 
-        return this.allFactors[0].toString();
-      }
+      // expandPoly() { 
+      //   this.expansion = "3";
+      // }
 
-      // Get expanded form
-      makeExpandButton() {
-        let btn = document.createElement("button");
-        btn.innerHTML = "Expand the Polynomial";
-        btn.addEventListener("click", function () {
-          this.wasExpanded = true;
-          // Expand the polynomial
-          document.getElementById("expanded").innerHTML = expandPoly();
-        });
-        document.getElementById("expanded").append(btn);
-      }
+      // // // Get expanded form
+      // // makeExpandButton() {
+      //   let btn = document.createElement("button");
+      //   btn.innerHTML = "Expand the Polynomial";
+      //   btn.addEventListener("click", function () {
+      //     this.wasExpanded = true;
+
+
+      //     // Write to screen
+      //     document.getElementById("expanded").innerHTML = this.termFactors[i];
+      //   });
+      //   document.getElementById("expanded").append(btn);
+      // }
     }
 
     // Member fields:
