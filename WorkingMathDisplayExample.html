@@ -94,6 +94,9 @@ class Term {
                             	//document.getElementById("demo3").innerHTML += "" + coefficients + "***";
 
             }
+            if (result[1] === "-"){
+            	coefficients *= -1;
+            }
             
             //parse variable term (x_b)
             let variable = result[2]
