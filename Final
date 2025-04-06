@@ -192,7 +192,7 @@
                 let vars = new Map();
                 
                 // const test = "3a_22^4"
-                const format = /(-?[\d\.]*)(\D)?(_-?\d|_\{-?[\d\.]*\})?(\^-?\d|\^\{-?[\d\.]*\})?/;
+                const format = /(-?[\d\.]*)(\D)?(_\{[^\}]*\}|_\.\d*|_.)?(\^\d|\^\{-?[\d\.]*\}|\^\.\d*)?/;
                 
                 for (let i = 0; i < this.termFactors.length; i++){
                     var result = this.termFactors[i].match(format);
