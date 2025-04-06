@@ -1,13 +1,12 @@
  function toggleExponents(){
     showExponentsOfOne.onclick(!showExponentsOfOne); // toggles
-    console.log("Exponents of One are now shown.");
-
+    console.log("Exponents of One are now shown (or not shown who knows).");
 }
-        var button = document.createElement("button");
-        button.innerHTML = "Toggle Exponents of One"; 
-        button.style.height = '50px';
-        button.style.width = '200px';
-        button.style.marginTop = '20px'; 
-        document.getElementById('button-container').appendChild(button);
+        var button2 = document.createElement("button");
+        button2.innerHTML = "Toggle Exponents of One"; 
+        button2.style.height = '50px';
+        button2.style.width = '200px';
+        button2.style.marginTop = '20px'; 
+        document.getElementById('button-container').appendChild(button2);
 
-        button.addEventListener('click',toggleExponents())
+        button2.addEventListener('click',toggleExponents())
