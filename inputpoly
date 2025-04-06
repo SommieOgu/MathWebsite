@@ -129,6 +129,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-color: #f44336;
         }
 
+        button {
+            background-color: #1f1f1f;
+            color: #ffffff;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 10px 16px;
+            margin: 5px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #292929;
+            transform: scale(1.05);
+            box-shadow: 0 0 8px rgba(0, 255, 170, 0.3);
+        }
+
     </style>
    
 </head>
@@ -144,3 +160,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </body>
 </html>
+
