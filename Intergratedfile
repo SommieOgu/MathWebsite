@@ -160,6 +160,7 @@
                 // Update term at index to screen
                 this.termFactors[index] = value;
                 this.print();
+                this.regexPrint();
             }
            
             // Start up term with leftmost summands
@@ -168,6 +169,7 @@
                     this.termFactors[i] = this.allFactors[i].at(0);
                 }
                 this.print();
+                this.regexPrint();
             }
            
             // Send our current term to the screen at "vis" element
@@ -181,19 +183,81 @@
                 let vars = new Map();
                 
                 // const test = "3a_22^4"
-                const format = /(-?\d*)(\D)(_\d|_\{\d*\})?(\^\d|\^\{\d*\})?/;
+                const format = /(-?[\d\.]*)(\D)(_\d|_\{[\d\.]*\})?(\^\d|\^\{[\d\.]*\})?/;
                 
                 for (let i = 0; i < this.termFactors.length; i++){
                     var result = this.termFactors[i].match(format);
-                    document.getElementById("demo3").innerHTML += result.join("| ") + " // ";
+                    //document.getElementById("demo3").innerHTML += result.join("| ") + " // ";
                     
-                    let tmp = parseInt(result[1]);
-                    if (!isNaN(tmp)){
-                        document.getElementById("demo3").innerHTML += "" + tmp + "***";
+                    let coeff = parseFloat(result[1]);
+                    if (!isNaN(coeff)){
+                        coefficients *= coeff; 
+                        //document.getElementById("demo3").innerHTML += "" + tmp + "***";
                     }
-                }
+                    if (result[1] === "-"){
+            	coefficients *= -1;
             }
+            
+            //parse variable term (x_b)
+            let variable = result[2]
+            if (!(result[3] === undefined)){
+            	variable += result[3];
+         	}
+            	
+            // parse exponent (^c)
+            //document.getElementById("demo3").innerHTML += "" + variable + "***";
+            let exp = 1;
+            const int_format = /\^\{?([\d\.]*)\}?/;
+            
+            //check if has exponent term
+            if (!(result[4] === undefined)){
+            	//document.getElementById("demo3").innerHTML += "" + result[4] + "+++"
+            	 let int_exp_res = result[4].match(int_format);
+                 //document.getElementById("demo3").innerHTML += "" + int_exp_res[1] + "===";
+                 let temp = int_exp_res[1];
+                 exp = parseFloat(temp);
+            }
+            
+            //if variable in map, update, otherwise add
+            if (vars.has(variable)){
+            	let num = vars.get(variable);
+            	num += exp;
+                vars.set(variable,num);
+                
+            }
+            else{
+            	vars.set(variable,exp);
+            }
+            //document.getElementById("demo3").innerHTML += "" + variable + "," +vars.get(variable) + "***";
+
+
         }
+    
+        
+    	let str = "";
+        //output the final expression
+        if (coefficients == 1){ //account for 1,-1
+        	str = "$$";
+            
+        } else if (coefficients == -1){
+        	str = "$$" + "-";
+        
+        }else { 
+        	str = "$$"+ coefficients;
+        }
+        
+        for (let [k,v] of vars){
+        	if ( !showExponentsOfOne && v == 1 ){
+            	str += "" + k ;
+            } else{
+            	str += "" + k + "^{" + v +"}" ;
+			}
+        }
+        document.getElementById("demo3").innerHTML = str + "$$";
+
+    }
+            }
+
 
         // Member fields:
         //   summands = an array containing each element as a string ["x_1", "x_2"]
@@ -257,13 +321,17 @@
                     globalTerm.update(this.factorNumber, this.at(this.currPointer));
                     newButton.innerHTML = this.toStringHighlighted();
                     MathJax.typesetPromise();
-                });
+                }); 
+
             }
         }
 
         // ALWAYS HAVE THIS AS FIRST THING WE DO
         let globalTerm = new Term();
+        let showExponentsOfOne = true;
 
+        
+        
         // Function to process polynomials and create visualization
         function processPolynomials(polynomials) {
             // Clear any existing factors
@@ -334,7 +402,7 @@
                         // Add form back
                         resultHtml += '<h2>Factor Polynomials</h2>';
                         resultHtml += '<form id="polynomialForm" method="POST">';
-                        resultHtml += '<label for="polynomials">Enter polynomials (e.g., (x^4 + 3)(x^2 + x^4 + x^7)(x^2)):</label>';
+                        resultHtml += '<label for="polynomials">Enter polynomials (e.g., (x^4 + 3)(x^2 + x^4 + x^7)(x^2)):</label>';//check gitbub
                         resultHtml += '<input type="text" id="polynomials" name="polynomials" required><br><br>';
                         resultHtml += '<button type="submit">Submit</button>';
                         resultHtml += '</form>';
@@ -390,6 +458,8 @@
                 alert("Please enter valid polynomials before proceeding.");
             }
         };
+
+    
     </script>
 </body>
 </html>
