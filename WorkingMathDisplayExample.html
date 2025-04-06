@@ -86,7 +86,7 @@
         //const test = "3a_{22}^{34}"
 
         //regex format: decimal, var, _num, ^num
-        const format = /(-?[\d\.]*)(\D)?(_\d|_\{[\d\.]*\})?(\^\d|\^\{[\d\.]*\})?/;
+        const format = /(-?[\d\.]*)(\D)?(_-?\d|_\{-?[\d\.]*\})?(\^-?\d|\^\{-?[\d\.]*\})?/;
 
         //for each ax_b^c in termFactors, 
         for (let i = 0; i < this.termFactors.length; i++) {
@@ -95,7 +95,11 @@
           //var result = test.match(format);
 
           //document.getElementById("demo3").innerHTML += result.join("| ") + " // ";
-
+          let factorsSoFar = "";
+       		 //document.getElementById("testprint").innerHTML = "test";
+			    let count = 0;
+          while(factorsSoFar.length < this.termFactors[i].length && count <= 10){
+             //document.getElementById("testprint").innerHTML += "" + result[0];
 
           //parse and mult coefficient (a)
           let coeff = parseFloat(result[1]);
@@ -117,7 +121,7 @@
           // parse exponent (^c)
           //document.getElementById("demo3").innerHTML += "" + variable + "***";
           let exp = 1;
-          const int_format = /\^\{?([\d\.]*)\}?/;
+          const int_format = /\^\{?(-?[\d\.]*)\}?/;
 
           //check if has exponent term
           if (!(result[4] === undefined)) {
@@ -140,6 +144,15 @@
           }
           //document.getElementById("demo3").innerHTML += "" + variable + "," +vars.get(variable) + "***";
 
+           //inc while
+           factorsSoFar += result[0];
+            
+           if (factorsSoFar.length < this.termFactors[i].length){
+            	let substrFactor = this.termFactors[i].substring(factorsSoFar.length);
+            	result = substrFactor.match(format);
+           }
+           count ++;
+           } //endwhile
 
         }
 
