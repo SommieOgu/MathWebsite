@@ -1,0 +1,15 @@
+  <script>
+        function toggleUserProfile() {
+            const userProfileForm = document.getElementById('userProfileForm');
+            const slideshow = document.getElementById('slideshow');
+            userProfileForm.classList.toggle('show');
+            userProfileForm.classList.toggle('hide');
+
+            if (userProfileForm.classList.contains('show')){
+            slideshow.hidden
+            }
+            else {
+            slideshow.style.opacity = 1;
+            }
+        }
+    </script>
