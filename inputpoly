@@ -12,17 +12,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Remove unnecessary whitespace from the input
     $polynomialInput = trim($polynomialInput);
 
-    // Split the input by parentheses to handle multiple expressions
-    preg_match_all('/\((.*?)\)/', $polynomialInput, $matches);
-
-    // If there are expressions found inside parentheses, store them
-    if (count($matches[1]) > 0) {
-        $polynomialsArray = $matches[1]; // Store the polynomial expressions inside parentheses
-        $showAlert = true;  // Success message
+    // Check if parentheses are balanced
+    if (substr_count($polynomialInput, '(') !== substr_count($polynomialInput, ')')) {
+        $showError = "The polynomial expression contains unbalanced parentheses.";
     } else {
-        $showError = "Please enter valid polynomial expressions within parentheses.";
+        // Split the input by parentheses to handle multiple expressions
+        preg_match_all('/\((.*?)\)/', $polynomialInput, $matches);
+
+        // If there are expressions found inside parentheses, store them
+        if (count($matches[1]) > 0) {
+            // For each expression, split it into terms
+            $processedPolynomials = [];
+            for ($i = 0; $i < count($matches[1]); $i++) {
+                $expression = $matches[1][$i];
+                // Split by + to get individual terms, but be careful with negative terms
+                $terms = preg_split('/(?<!\-)\+/', $expression);
+
+                // Clean up each term
+                $cleanedTerms = [];
+                foreach ($terms as $term) {
+                    $term = trim($term);
+                    // Replace multiple spaces with a single space
+                    $term = preg_replace('/\s+/', ' ', $term);
+                    if (!empty($term)) {
+                        $cleanedTerms[] = $term;
+                    }
+                }
+
+                // Add the array of terms for this expression
+                if (count($cleanedTerms) > 0) {
+                    $processedPolynomials[] = $cleanedTerms;
+                }
+            }
+
+            // If we have processed polynomials, store them
+            if (count($processedPolynomials) > 0) {
+                $polynomialsArray = $processedPolynomials;
+                $showAlert = true;  // Success message
+            } else {
+                $showError = "Could not process the polynomial expressions properly.";
+            }
+        } else {
+            $showError = "Please enter valid polynomial expressions within parentheses.";
+        }
     }
-    
+
     // Return JSON response for AJAX POST requests
     header('Content-Type: application/json');
     echo json_encode([
@@ -94,7 +128,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .error {
             background-color: #f44336;
         }
+
     </style>
+   
 </head>
 <body>
     <div class="container" style="margin: 0; width: auto; box-shadow: none;">
