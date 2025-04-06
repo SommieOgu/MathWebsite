@@ -76,7 +76,7 @@ class Term {
         //const test = "3a_{22}^{34}"
         
         //regex format: decimal, var, _num, ^num
-        const format = /(-?\d*)(\D)(_\d|_\{\d*\})?(\^\d|\^\{\d*\})?/;
+        const format = /(-?[\d\.]*)(\D)(_\d|_\{[\d\.]*\})?(\^\d|\^\{[\d\.]*\})?/;
         
         //for each ax_b^c in termFactors, 
         for (let i = 0; i < this.termFactors.length; i++){
@@ -88,7 +88,7 @@ class Term {
             
         	
             //parse and mult coefficient (a)
-           	let coeff = parseInt(result[1]);
+           	let coeff = parseFloat(result[1]);
             if (!isNaN(coeff)){
              	coefficients *= coeff;   
                             	//document.getElementById("demo3").innerHTML += "" + coefficients + "***";
@@ -107,7 +107,7 @@ class Term {
             // parse exponent (^c)
             //document.getElementById("demo3").innerHTML += "" + variable + "***";
             let exp = 1;
-            const int_format = /\^\{?(\d*)\}?/;
+            const int_format = /\^\{?([\d\.]*)\}?/;
             
             //check if has exponent term
             if (!(result[4] === undefined)){
@@ -115,7 +115,7 @@ class Term {
             	 let int_exp_res = result[4].match(int_format);
                  //document.getElementById("demo3").innerHTML += "" + int_exp_res[1] + "===";
                  let temp = int_exp_res[1];
-                 exp = parseInt(temp);
+                 exp = parseFloat(temp);
             }
             
             //if variable in map, update, otherwise add
