@@ -320,25 +320,28 @@
     // Modify this to get the print
     document.getElementById("demo").innerHTML = factor1.toString();
   </script>
-
-  <!-- TODO: Get this button working -->
+  
   <p></p>
-  <label id="toggleExponentOfOneButtonLabel"">• Currently showing \(x^1\).</label>
-  <button id="toggleExponentOfOneButton" type="button" onclick="toggleViewExponent()">Show \(x\) instead.</button>
+  <p><b>Settings & Input</b></p>
+
+  <!-- TODO: Button to toggle showExponentsOfOne -->
+  <label id="toggleExponentOfOneButtonLabel"">Currently hiding exponents of 1: \(x\).</label>
+  <button id="toggleExponentOfOneButton" type="button" onclick="toggleViewExponent()">Show \(x^1\) instead.</button>
 
   <script>
     function toggleViewExponent() {
+
       showExponentsOfOne = !showExponentsOfOne;
       globalTerm.update()
       console.log("Toggled showExponentOfOne, it's now " + showExponentsOfOne);
 
       // Switch button and label to say right thing
       if (showExponentsOfOne) {
-        document.getElementById("toggleExponentOfOneButtonLabel").innerHTML = "Currently showing \(x^1\).";
-        document.getElementById("toggleExponentOfOneButton").innerHTML = "Show \(x\) instead.";
+        document.getElementById("toggleExponentOfOneButtonLabel").innerHTML = "Currently <strong>showing</strong> exponents of 1: \\(x^1\\).";
+        document.getElementById("toggleExponentOfOneButton").innerHTML = "<strong>Hide</strong> instead:  \\(x\\)";
       } else {
-        document.getElementById("toggleExponentOfOneButtonLabel").innerHTML = "Show \(x\) instead.";
-        document.getElementById("toggleExponentOfOneButton").innerHTML = "Show \(x^1\) instead.";
+        document.getElementById("toggleExponentOfOneButtonLabel").innerHTML = "Currently <strong>hiding</strong> exponents of 1: \\(x\\).";
+        document.getElementById("toggleExponentOfOneButton").innerHTML = "<strong>Show</strong> instead: \\(x^1\\).";
       }
       MathJax.typesetPromise();
     }
@@ -347,11 +350,14 @@
 
   <!-- TODO: Get this input form working -->
   <p></p>
-
   <form id="myForm">
     <label>Enter Input: <input id="polynomial" name="polynomial" value='[["3a", "4x"], ["y", "z_0"]]'></label>
-    <input type="submit" value="Submit">
+    <input type="submit" value="Submit"> 
+    <span id="inputReceivedIndicator"></span>
   </form>
+
+  <!-- Input indicator -->
+
 
   <script>
     // The above form and this function are from https://stackoverflow.com/a/41262933
@@ -367,11 +373,16 @@
 
     document.getElementById("myForm").addEventListener("submit", function (e) {
       e.preventDefault();
+      console.log("Reached submit data");
+
+      // Input received indicator
+      let currentDate = new Date();
+      document.getElementById("inputReceivedIndicator").innerHTML = "Latest input: " + currentDate.toLocaleTimeString();
+
+      // process input data
       getData(e.target);
     });
-
   </script>
-
 
 </body>
 
