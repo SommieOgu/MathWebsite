@@ -96,63 +96,63 @@
 
           //document.getElementById("demo3").innerHTML += result.join("| ") + " // ";
           let factorsSoFar = "";
-       		 //document.getElementById("testprint").innerHTML = "test";
-			    let count = 0;
-          while(factorsSoFar.length < this.termFactors[i].length && count <= 10){
-             //document.getElementById("testprint").innerHTML += "" + result[0];
+          //document.getElementById("testprint").innerHTML = "test";
+          let count = 0;
+          while (factorsSoFar.length < this.termFactors[i].length && count <= 10) {
+            //document.getElementById("testprint").innerHTML += "" + result[0];
 
-          //parse and mult coefficient (a)
-          let coeff = parseFloat(result[1]);
-          if (!isNaN(coeff)) {
-            coefficients *= coeff;
-            //document.getElementById("demo3").innerHTML += "" + coefficients + "***";
+            //parse and mult coefficient (a)
+            let coeff = parseFloat(result[1]);
+            if (!isNaN(coeff)) {
+              coefficients *= coeff;
+              //document.getElementById("demo3").innerHTML += "" + coefficients + "***";
 
-          }
-          if (result[1] === "-") {
-            coefficients *= -1;
-          }
+            }
+            if (result[1] === "-") {
+              coefficients *= -1;
+            }
 
-          //parse variable term (x_b)
-          let variable = result[2]
-          if (!(result[3] === undefined)) {
-            variable += result[3];
-          }
+            //parse variable term (x_b)
+            let variable = result[2]
+            if (!(result[3] === undefined)) {
+              variable += result[3];
+            }
 
-          // parse exponent (^c)
-          //document.getElementById("demo3").innerHTML += "" + variable + "***";
-          let exp = 1;
-          const int_format = /\^\{?(-?[\d\.]*)\}?/;
+            // parse exponent (^c)
+            //document.getElementById("demo3").innerHTML += "" + variable + "***";
+            let exp = 1;
+            const int_format = /\^\{?(-?[\d\.]*)\}?/;
 
-          //check if has exponent term
-          if (!(result[4] === undefined)) {
-            //document.getElementById("demo3").innerHTML += "" + result[4] + "+++"
-            let int_exp_res = result[4].match(int_format);
-            //document.getElementById("demo3").innerHTML += "" + int_exp_res[1] + "===";
-            let temp = int_exp_res[1];
-            exp = parseFloat(temp);
-          }
+            //check if has exponent term
+            if (!(result[4] === undefined)) {
+              //document.getElementById("demo3").innerHTML += "" + result[4] + "+++"
+              let int_exp_res = result[4].match(int_format);
+              //document.getElementById("demo3").innerHTML += "" + int_exp_res[1] + "===";
+              let temp = int_exp_res[1];
+              exp = parseFloat(temp);
+            }
 
-          //if variable in map, update, otherwise add
-          if (vars.has(variable)) {
-            let num = vars.get(variable);
-            num += exp;
-            vars.set(variable, num);
+            //if variable in map, update, otherwise add
+            if (vars.has(variable)) {
+              let num = vars.get(variable);
+              num += exp;
+              vars.set(variable, num);
 
-          }
-          else {
-            vars.set(variable, exp);
-          }
-          //document.getElementById("demo3").innerHTML += "" + variable + "," +vars.get(variable) + "***";
+            }
+            else {
+              vars.set(variable, exp);
+            }
+            //document.getElementById("demo3").innerHTML += "" + variable + "," +vars.get(variable) + "***";
 
-           //inc while
-           factorsSoFar += result[0];
-            
-           if (factorsSoFar.length < this.termFactors[i].length){
-            	let substrFactor = this.termFactors[i].substring(factorsSoFar.length);
-            	result = substrFactor.match(format);
-           }
-           count ++;
-           } //endwhile
+            //inc while
+            factorsSoFar += result[0];
+
+            if (factorsSoFar.length < this.termFactors[i].length) {
+              let substrFactor = this.termFactors[i].substring(factorsSoFar.length);
+              result = substrFactor.match(format);
+            }
+            count++;
+          } //endwhile
 
         }
 
@@ -257,13 +257,36 @@
       }
     }
 
+    /** Function to load up a new factor from a matrix (array of arrays)
+     * @param factorArray = array we want to put factors into; the array used by the program
+     * @param inputArray = array of arrays (matrix) from which we'll get factorArray
+     * inv - inputArray needs to be a valid input
+    */
+    function loadFactorArray(factorArray, inputArray) {
+      // If factorArray has integers, change them into strings (if not, no problem)
+
+      // Reset factorArray
+      factorArray = [];
+
+      // Load factorArray
+      for (let i = 0; i < inputArray.length; i++) {
+        factorArray.push(new Factor(inputArray.at(i)));
+      }
+
+      return factorArray;
+    }
+
+    //         -===-=====-=====- =========== -=====-=====-===-         //
+    //         -===-=====-=====- MAIN DRIVER -=====-=====-===-         //
+    //    -==-=====-=====-=====- MAIN DRIVER -=====-=====-=====-==-    //
+    //  -=====-=====-===-==-===- MAIN DRIVER -===-==-===-=====-=====-  //
+    // -=====-=====-=====-=====- MAIN DRIVER -=====-=====-=====-=====- //
     // ALWAYS HAVE THIS AS FIRST THING WE DO
-    let globalTerm = new Term();
-    let showExponentsOfOne = true;
+    let globalTerm = new Term();    // Creating the main Term visualizer
+    let showExponentsOfOne = true;  // Toggle for feature to show/hide the 1 in x^1
 
-
-    // Create some factors to play with
-    const factorArray = [
+    // TODO: These are hardcoded factors to play with
+    let factorArray = [
       new Factor(["2x_1", "x_2", "x_3"]),
       new Factor(["x_4", "-x_5", "x_6"]),
       new Factor(["-9y^3", "3x_5", "9x_3", "y_5", "z_6"]),
@@ -271,18 +294,16 @@
       new Factor(["9y^3", "3x_5", "-9x_3x_4x_5^2", "y_5", "858z_1"])
     ];
 
-
     // Load all factors into our globalTerm
     for (let i = 0; i < factorArray.length; i++) {
       globalTerm.push(factorArray[i]);
     }
+
     // Initialize the term with the leftmost summands
     globalTerm.initialize();
 
     // Modify this to get the print
     document.getElementById("demo").innerHTML = factor1.toString();
-    // Creates new buttons
-
   </script>
 
 </body>
