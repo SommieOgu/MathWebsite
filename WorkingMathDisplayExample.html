@@ -266,7 +266,7 @@
 
     // TODO: This function updates the factored array based on new input,
     // using new helper functions as necessary.
-    function updateFactorArray(form){
+    function updateFactorArray(form) {
       var formData = new FormData(form);
       console.log(formData.entries);
     }
@@ -298,7 +298,7 @@
     // -=====-=====-=====-=====- MAIN DRIVER -=====-=====-=====-=====- //
     // ALWAYS HAVE THIS AS FIRST THING WE DO
     let globalTerm = new Term();    // Creating the main Term visualizer
-    let showExponentsOfOne = true;  // Toggle for feature to show/hide the 1 in x^1
+    let showExponentsOfOne = false;  // Toggle for feature to show/hide the 1 in x^1
 
     // TODO: These are hardcoded factors to play with
     let factorArray = [
@@ -321,39 +321,56 @@
     document.getElementById("demo").innerHTML = factor1.toString();
   </script>
 
+  <!-- TODO: Get this button working -->
+  <p></p>
+  <label id="toggleExponentOfOneButtonLabel"">• Currently showing \(x^1\).</label>
+  <button id="toggleExponentOfOneButton" type="button" onclick="toggleViewExponent()">Show \(x\) instead.</button>
+
+  <script>
+    function toggleViewExponent() {
+      showExponentsOfOne = !showExponentsOfOne;
+      globalTerm.update()
+      console.log("Toggled showExponentOfOne, it's now " + showExponentsOfOne);
+
+      // Switch button and label to say right thing
+      if (showExponentsOfOne) {
+        document.getElementById("toggleExponentOfOneButtonLabel").innerHTML = "Currently showing \(x^1\).";
+        document.getElementById("toggleExponentOfOneButton").innerHTML = "Show \(x\) instead.";
+      } else {
+        document.getElementById("toggleExponentOfOneButtonLabel").innerHTML = "Show \(x\) instead.";
+        document.getElementById("toggleExponentOfOneButton").innerHTML = "Show \(x^1\) instead.";
+      }
+      MathJax.typesetPromise();
+    }
+  </script>
+
+
   <!-- TODO: Get this input form working -->
   <p></p>
 
+  <form id="myForm">
+    <label>Enter Input: <input id="polynomial" name="polynomial" value='[["3a", "4x"], ["y", "z_0"]]'></label>
+    <input type="submit" value="Submit">
+  </form>
+
   <script>
-    document.getElementById("userInputForm").addEventListener('submit', function (e) {
+    // The above form and this function are from https://stackoverflow.com/a/41262933
+    function getData(form) {
+      var formData = new FormData(form);
+
+      for (var pair of formData.entries()) {
+        console.log(pair[0] + ": " + pair[1]);
+      }
+
+      console.log(Object.fromEntries(formData));
+    }
+
+    document.getElementById("myForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      updateFactorArray(e.target)
+      getData(e.target);
     });
+
   </script>
-
-<form id="myForm">  
-  <label>Enter Input: <input id="polynomial" name="polynomial" value='[["3a", "4x"], ["y", "z_0"]]'></label>
-  <input type="submit" value="Submit">
-</form>
-
-<script>
-  // The above form and this function are from https://stackoverflow.com/a/41262933
-  function getData(form) {
-  var formData = new FormData(form);
-
-  for (var pair of formData.entries()) {
-    console.log(pair[0] + ": " + pair[1]);
-  }
-
-  console.log(Object.fromEntries(formData));
-}
-
-document.getElementById("myForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-  getData(e.target);
-});
-
-</script>
 
 
 </body>
