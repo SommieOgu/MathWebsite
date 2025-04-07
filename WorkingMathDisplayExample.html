@@ -6,9 +6,16 @@
 <html>
 
 <body>
-  <h1>Polynomial Term Visualization</h1>
-
+  <h1>
+    <div style="text-align: center;">Polynomial Term Visualization</div>
+  </h1>
   <p>
+  <div style="text-align: center;">Polynomials are useful in many areas of mathematics. This project visualizes a
+    specific term of
+    a polynomial, given by a specific choice of summands within each factor.</div>
+  </p>
+
+  <!-- Main functionality -->
   <div style="text-align: center;">
     <b>Current term:</b>
   </div>
@@ -257,6 +264,13 @@
       }
     }
 
+    // TODO: This function updates the factored array based on new input,
+    // using new helper functions as necessary.
+    function updateFactorArray(form){
+      var formData = new FormData(form);
+      console.log(formData.entries);
+    }
+
     // TODO: This function does not seem to work. I probably misunderstand JS arrays -Alex
     /** Function to load up a new factor from a matrix (array of arrays)
      * @param factorArray = array we want to put factors into; the array used by the program
@@ -305,6 +319,22 @@
 
     // Modify this to get the print
     document.getElementById("demo").innerHTML = factor1.toString();
+  </script>
+
+  <!-- input form -->
+  <p></p>
+  <form id="userInputForm" action="javascript:updateFactorArray()">
+    <div style="text-align: center;"> <b>Enter factored polynomial:</b></div>
+    <label>factorString</label>
+    <div style="text-align: center;"><input type="text" id="factorString" name="factorString" value="(x)(x+1)"></div>
+    <div style="text-align: center;"><input type="submit" value="submit"></div>
+  </form>
+
+  <script>
+    document.getElementById("userInputForm").addEventListener('submit', function (e) {
+      e.preventDefault();
+      updateFactorArray(e.target)
+    });
   </script>
 
 </body>
