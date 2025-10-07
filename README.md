@@ -1,5 +1,5 @@
 # Elevator Pitch
-Simplifying polynomials can be impossible (power series), intractable (NP-hard), or simply unneeded. Our webapp visualizes single terms instead. One particular use lists subtrees of a graph in their entirety.
+Simplifying polynomials can be impossible (power series), costly, or simply unneeded. Our webapp visualizes single terms instead. One particular use lists subtrees of a graph in their entirety.
 
 # What To Do
 See a demo here: https://alexmacomposer.wixsite.com/home/polynomial-term-visualizer
